@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test/providers/authenticationProvider.dart';
+import 'package:test/utils/routes.dart';
+import 'package:test/utils/utils.dart';
 
 class Login extends StatefulWidget {
   Login();
@@ -14,9 +16,13 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: Center(
         child: ElevatedButton(
-            onPressed: () {
-              Authentication.signInWithGoogle(context: context)
-                  .then((value) {});
+            onPressed: () async {
+              var resp =
+                  await Authentication.signInWithGoogle(context: context);
+              if (resp!.uid.isNotEmpty) {
+                Utils.mainNavigator.currentState!
+                    .pushReplacementNamed(routeMovieList);
+              }
             },
             child: Text("Inciar Sesion")),
       ),

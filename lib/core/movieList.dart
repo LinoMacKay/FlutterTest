@@ -39,6 +39,18 @@ class _MovieListState extends State<MovieList> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Movies"),
+          actions: [
+            Container(
+              margin: EdgeInsets.only(right: 10),
+              child: GestureDetector(
+                onTap: () {
+                  Utils.mainNavigator.currentState!
+                      .pushReplacementNamed(routeLoginView);
+                },
+                child: Icon(Icons.logout),
+              ),
+            )
+          ],
         ),
         // bottomNavigationBar: BottomNavigationBar(
         //   onTap: _onItemTapped,
@@ -78,10 +90,14 @@ class _HomeState extends State<Home> {
         height: screenHeight,
         child: Stack(
           children: [
-            ListView.builder(
-                itemCount: movieProvider.movies.length,
-                itemBuilder: (ctx, indx) =>
-                    MovieCard(movieProvider.movies[indx])),
+            movieProvider.movies.length > 0
+                ? ListView.builder(
+                    itemCount: movieProvider.movies.length,
+                    itemBuilder: (ctx, indx) =>
+                        MovieCard(movieProvider.movies[indx]))
+                : Center(
+                    child: CircularProgressIndicator(),
+                  ),
             Align(
               alignment: Alignment.bottomRight,
               child: Container(

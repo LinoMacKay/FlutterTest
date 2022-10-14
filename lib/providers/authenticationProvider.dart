@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test/providers/notificationProvider.dart';
 import 'package:test/utils/utils.dart';
 
 class Authentication {
@@ -17,9 +19,9 @@ class Authentication {
     initializeFirebase();
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
+    final prefs = await SharedPreferences.getInstance();
 
-    final GoogleSignIn googleSignIn =
-        GoogleSignIn(serverClientId: Utils.googleKey);
+    final GoogleSignIn googleSignIn = GoogleSignIn();
 
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signIn();
@@ -38,11 +40,16 @@ class Authentication {
             await auth.signInWithCredential(credential);
 
         user = userCredential.user;
+        prefs.setString("id", user!.uid.toString());
+        NotificationProvider()
+            .showSnackbar(context, "Logeado Correctamente", "success", null);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
-          // handle the error here
+          NotificationProvider()
+              .showSnackbar(context, "Su cuenta ya existe", "error", null);
         } else if (e.code == 'invalid-credential') {
-          // handle the error here
+          NotificationProvider()
+              .showSnackbar(context, "Credenciales Incorrectas", "error", null);
         }
       } catch (e) {
         // handle the error here

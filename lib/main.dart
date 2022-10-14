@@ -46,6 +46,8 @@ class MyApp extends StatelessWidget {
                 page = Favorites();
               } else if (settings.name == routeLoginView) {
                 page = Login();
+              } else if (settings.name == routeMovieList) {
+                page = MovieList();
               } else {
                 throw Exception('Unknown route: ${settings.name}');
               }
